@@ -1,0 +1,17 @@
+{
+  "name": "emonEProm",
+  "keywords": "electricity, energy, monitoring",
+  "description": "emonEProm Library",
+  "version": "1.0.0",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/openenergymonitor/emonEProm.git"
+  },
+  "frameworks": "arduino",
+  "platforms":
+  [
+    "atmelavr",
+    "atmelsam"
+  ]
+}

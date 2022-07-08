@@ -41,9 +41,11 @@ void eepromPrint(bool emonPi=false);
 void printblock(int start, int size, bool emonPi=false); //private to library
 
 void storeEValues(long E1, long E2, long E3, long E4, long E5, long E6, unsigned long pulses1);
+void storeEValues(long E1, long E2, long E3, unsigned long pulses1, unsigned long pulses2);
 void storeEValues(long E1, long E2, unsigned long pulses1, unsigned long pulses2);
 
 bool recoverEValues(long *E1, long *E2, long *E3, long *E4, long *E5, long *E6, unsigned long *pulses); 
+bool recoverEValues(long *M1, long *M2, long *M3, unsigned long *pulses1, unsigned long *pulses2);
 bool recoverEValues(long *M1, long *M2, unsigned long *pulses1, unsigned long *pulses2);
 
 void zeroEValues(void);

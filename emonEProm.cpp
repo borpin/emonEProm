@@ -247,6 +247,25 @@ bool recoverEValues(long *M1, long *M2, long *M3, long *M4, long *M5, long *M6, 
   }
   return success;
 }
+
+bool recoverEValues(long *M1, long *M2, long *M3, unsigned long *pulses1, unsigned long *pulses2)
+{
+  bool success = EVmem.get(mem);
+  if (success)
+  {
+    if (M1)
+      *M1 = mem.m1;
+    if (M2)
+      *M2 = mem.m2;
+    if (M3)
+      *M3 = mem.m3;
+    if (pulses1)
+      *pulses1 = mem.m4;
+    if (pulses2)
+      *pulses2 = mem.m5;
+  }
+  return success;
+}
  
 bool recoverEValues(long *M1, long *M2, unsigned long *pulses1, unsigned long *pulses2)
 {
@@ -292,6 +311,37 @@ void storeEValues(long E1, long E2, long E3, long E4, long E5, long E6, unsigned
       mem.m5 = E5;
       mem.m6 = E6;
       mem.m7 = pulses1;
+      #ifdef EEWL_DEBUG
+        Serial.println(F("Writing..."));
+      #endif
+      EVmem.put( mem );
+      #ifdef EEWL_DEBUG
+        EVmem.dump_stats(); 
+      #endif
+    }
+}
+
+void storeEValues(long E1, long E2, long E3, unsigned long pulses1, unsigned long pulses2)
+{
+#ifdef EEWL_DEBUG 
+  Serial.print(F("E1 diff="));Serial.print(abs(E1-mem.m1));
+  Serial.print(F("  E2 diff="));Serial.print(abs(E2-mem.m2));
+  Serial.print(F("  E3 diff="));Serial.print(abs(E3-mem.m3));
+  Serial.print(F("  P1 diff="));Serial.print(abs(pulses1-mem.m4));
+  Serial.print(F("  P2 diff="));Serial.println(abs(pulses2-mem.m5));
+#endif
+
+  if ((abs(E1-mem.m1) >= WHTHRESHOLD_1)
+    || (abs(E2-mem.m2) >= WHTHRESHOLD_2)
+    || (abs(E3-mem.m3) >= WHTHRESHOLD_3)
+    || (abs((long)pulses1-mem.m4) >= WHTHRESHOLD_4)
+    || (abs((long)pulses2-mem.m5) >= WHTHRESHOLD_5))
+    {
+      mem.m1 = E1;
+      mem.m2 = E2;
+      mem.m3 = E3;
+      mem.m4 = pulses1;
+      mem.m5 = pulses2;
       #ifdef EEWL_DEBUG
         Serial.println(F("Writing..."));
       #endif

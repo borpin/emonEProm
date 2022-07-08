@@ -40,15 +40,15 @@ unsigned int eepromHide(uint16_t signature);
 void eepromPrint(bool emonPi=false);
 void printblock(int start, int size, bool emonPi=false); //private to library
 
-void storeEValues(long E1, long E2, long E3, long E4, unsigned long pulses1);
+void storeEValues(long E1, long E2, long E3, long E4, long E5, long E6, unsigned long pulses1);
 void storeEValues(long E1, long E2, unsigned long pulses1, unsigned long pulses2);
 
-bool recoverEValues(long *E1, long *E2, long *E3, long *E4, unsigned long *pulses); 
+bool recoverEValues(long *E1, long *E2, long *E3, long *E4, long *E5, long *E6, unsigned long *pulses); 
 bool recoverEValues(long *M1, long *M2, unsigned long *pulses1, unsigned long *pulses2);
 
 void zeroEValues(void);
 
-struct EValues {long m1, m2, m3, m4, m5;};
+struct EValues {long m1, m2, m3, m4, m5, m6, m7;};
 
 
 /*
@@ -60,6 +60,8 @@ struct EValues {long m1, m2, m3, m4, m5;};
 #define WHTHRESHOLD_3 200
 #define WHTHRESHOLD_4 200
 #define WHTHRESHOLD_5 200
+#define WHTHRESHOLD_6 200
+#define WHTHRESHOLD_7 200
 
 struct EEWL {
 

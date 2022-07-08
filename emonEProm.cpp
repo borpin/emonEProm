@@ -13,7 +13,7 @@
 
 
 char moniker[3] = {'O', 'E', 'M'};
-struct EValues mem = {0, 0, 0, 0, 0};
+struct EValues mem = {0, 0, 0, 0, 0, 0, 0};
 
 unsigned int eepromSize(void)
 {
@@ -225,7 +225,7 @@ void printblock(int start, int size, bool emonPi)
 EEWL EVmem(mem, ((E2END>>2) * 3) / (sizeof(mem)+1), E2END - (((E2END>>2) * 3) / (sizeof(mem)+1))*(sizeof(mem)+1));
 
 
-bool recoverEValues(long *M1, long *M2, long *M3, long *M4, unsigned long *pulses1)
+bool recoverEValues(long *M1, long *M2, long *M3, long *M4, long *M5, long *M6, unsigned long *pulses1)
 {
   bool success = EVmem.get(mem);
   if (success)
@@ -238,6 +238,10 @@ bool recoverEValues(long *M1, long *M2, long *M3, long *M4, unsigned long *pulse
       *M3 = mem.m3;
     if (M4)
       *M4 = mem.m4;
+    if (M5)
+      *M5 = mem.m5;
+    if (M6)
+      *M6 = mem.m6;
     if (pulses1)
       *pulses1 = mem.m5;
   }
@@ -261,27 +265,33 @@ bool recoverEValues(long *M1, long *M2, unsigned long *pulses1, unsigned long *p
   return success;
 }
 
-void storeEValues(long E1, long E2, long E3, long E4, unsigned long pulses1)
+void storeEValues(long E1, long E2, long E3, long E4, long E5, long E6, unsigned long pulses1)
 {
 #ifdef EEWL_DEBUG 
   Serial.print(F("E1 diff="));Serial.print(abs(E1-mem.m1));
   Serial.print(F("  E2 diff="));Serial.print(abs(E2-mem.m2));
   Serial.print(F("  E3 diff="));Serial.print(abs(E3-mem.m3));
   Serial.print(F("  E4 diff="));Serial.print(abs(E4-mem.m4));
-  Serial.print(F("  P1 diff="));Serial.println(abs(pulses1-mem.m5));
+  Serial.print(F("  E5 diff="));Serial.print(abs(E5-mem.m5)); 
+  Serial.print(F("  E6 diff="));Serial.print(abs(E6-mem.m6)); 
+  Serial.print(F("  P1 diff="));Serial.println(abs(pulses1-mem.m7));
 #endif
 
   if ((abs(E1-mem.m1) >= WHTHRESHOLD_1)
     || (abs(E2-mem.m2) >= WHTHRESHOLD_2)
     || (abs(E3-mem.m3) >= WHTHRESHOLD_3)
     || (abs(E4-mem.m4) >= WHTHRESHOLD_4)
-    || (((long)pulses1-mem.m5) >= WHTHRESHOLD_5))
+    || (abs(E5-mem.m5) >= WHTHRESHOLD_5)
+    || (abs(E6-mem.m6) >= WHTHRESHOLD_6)
+    || (((long)pulses1-mem.m7) >= WHTHRESHOLD_7))
     {
       mem.m1 = E1;
       mem.m2 = E2;
       mem.m3 = E3;
       mem.m4 = E4;
-      mem.m5 = pulses1;
+      mem.m5 = E5;
+      mem.m6 = E6;
+      mem.m7 = pulses1;
       #ifdef EEWL_DEBUG
         Serial.println(F("Writing..."));
       #endif
@@ -329,4 +339,4 @@ void zeroEValues(void)
 }
 
 
-
+

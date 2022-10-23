@@ -5,7 +5,8 @@
  *
  * V 1.0.0  9/7/2021
  */
- 
+#define Serial Serial3
+
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
@@ -22,7 +23,12 @@ unsigned int eepromSize(void)
  * Returns total size of EEPROM (E2END is from Arduino header file)
  */
  
-  return E2END + 1;
+  return EEPROM.length();
+}
+
+unsigned int e2end(void) 
+{
+  return EEPROM.length()-1;
 }
 
 
@@ -37,7 +43,7 @@ void eepromFormat(void)
  
   for (byte j=0; j<sizeof(moniker); j++)
     EEPROM.update(j, moniker[j]);
-  for (unsigned int j=sizeof(moniker); j<=E2END; j++)
+  for (unsigned int j=sizeof(moniker); j<=e2end(); j++)
     EEPROM.update(j, 0xFF);    
 }
 
@@ -109,7 +115,7 @@ unsigned int eepromWrite(uint16_t signature, byte *src, uint16_t length)
   if (!eepromValidate(signature))                               // EEPROM format unrecognised or wrong signature - use it
     eepromFormat();
   
-  if (length > (E2END - (((E2END>>2) * 3) / (sizeof(mem)+1))*(sizeof(mem)+1) - 1))
+  if (length > (e2end() - (((e2end()>>2) * 3) / (sizeof(mem)+1))*(sizeof(mem)+1) - 1))
     return 0;
     
   // Write the block
@@ -121,7 +127,7 @@ unsigned int eepromWrite(uint16_t signature, byte *src, uint16_t length)
   offset += sizeof(b);
   do {
     EEPROM.update(offset++, *src++);
-  } while (offset < end && offset < E2END);
+  } while (offset < end && offset < e2end());
   return b.length;
 }
 
@@ -222,7 +228,7 @@ void printblock(int start, int size, bool emonPi)
 *  Retain Energy variables     
 */
 
-EEWL EVmem(mem, ((E2END>>2) * 3) / (sizeof(mem)+1), E2END - (((E2END>>2) * 3) / (sizeof(mem)+1))*(sizeof(mem)+1));
+EEWL EVmem(mem, ((e2end()>>2) * 3) / (sizeof(mem)+1), e2end() - (((e2end()>>2) * 3) / (sizeof(mem)+1))*(sizeof(mem)+1));
 
 
 bool recoverEValues(long *M1, long *M2, long *M3, long *M4, long *M5, long *M6, unsigned long *pulses1)

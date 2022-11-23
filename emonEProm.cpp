@@ -43,8 +43,8 @@ void eepromFormat(void)
  
   for (byte j=0; j<sizeof(moniker); j++)
     EEPROM.update(j, moniker[j]);
-  for (unsigned int j=sizeof(moniker); j<=e2end(); j++)
-    EEPROM.update(j, 0xFF);    
+  for (unsigned int j=sizeof(moniker); j<EEPROM.length(); j++)
+    EEPROM.update(j, 0xFF);
 }
 
   
@@ -115,7 +115,7 @@ unsigned int eepromWrite(uint16_t signature, byte *src, uint16_t length)
   if (!eepromValidate(signature))                               // EEPROM format unrecognised or wrong signature - use it
     eepromFormat();
   
-  if (length > (e2end() - (((e2end()>>2) * 3) / (sizeof(mem)+1))*(sizeof(mem)+1) - 1))
+  if (length > EEWL_START)
     return 0;
     
   // Write the block
@@ -228,7 +228,7 @@ void printblock(int start, int size, bool emonPi)
 *  Retain Energy variables     
 */
 
-EEWL EVmem(mem, ((e2end()>>2) * 3) / (sizeof(mem)+1), e2end() - (((e2end()>>2) * 3) / (sizeof(mem)+1))*(sizeof(mem)+1));
+EEWL EVmem(mem, EEWL_BLOCKS, EEWL_START);
 
 
 bool recoverEValues(long *M1, long *M2, long *M3, long *M4, long *M5, long *M6, unsigned long *pulses1)
@@ -249,7 +249,7 @@ bool recoverEValues(long *M1, long *M2, long *M3, long *M4, long *M5, long *M6, 
     if (M6)
       *M6 = mem.m6;
     if (pulses1)
-      *pulses1 = mem.m5;
+      *pulses1 = mem.m7;
   }
   return success;
 }
@@ -308,7 +308,7 @@ void storeEValues(long E1, long E2, long E3, long E4, long E5, long E6, unsigned
     || (abs(E4-mem.m4) >= WHTHRESHOLD_4)
     || (abs(E5-mem.m5) >= WHTHRESHOLD_5)
     || (abs(E6-mem.m6) >= WHTHRESHOLD_6)
-    || (((long)pulses1-mem.m7) >= WHTHRESHOLD_7))
+    || (abs(pulses1-mem.m7) >= WHTHRESHOLD_7))
     {
       mem.m1 = E1;
       mem.m2 = E2;

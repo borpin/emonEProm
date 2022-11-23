@@ -9,8 +9,6 @@
  *
  * V 1.0.0  9/7/2021
  */
- 
-
 #ifndef emonEProm_h
 #define emonEProm_h
 
@@ -50,7 +48,10 @@ bool recoverEValues(long *M1, long *M2, unsigned long *pulses1, unsigned long *p
 
 void zeroEValues(void);
 
-struct EValues {long m1, m2, m3, m4, m5, m6, m7;};
+struct EValues {
+    long m1, m2, m3, m4, m5, m6;
+    unsigned long m7;
+};
 
 
 /*
@@ -64,6 +65,9 @@ struct EValues {long m1, m2, m3, m4, m5, m6, m7;};
 #define WHTHRESHOLD_5 200
 #define WHTHRESHOLD_6 200
 #define WHTHRESHOLD_7 200
+
+#define EEWL_START 102
+#define EEWL_BLOCKS 14
 
 struct EEWL {
 
@@ -208,11 +212,11 @@ struct EEWL {
     Serial.print(F("start_addr: "));
     if (start_addr<0x10)
       Serial.print("0");
-    Serial.println(start_addr,HEX);
+    Serial.println(start_addr);
     if (end_addr<0x10)
       Serial.print(F("0"));
     Serial.print(F("end_addr:   "));
-    Serial.println(end_addr,HEX);
+    Serial.println(end_addr);
   }
 
 

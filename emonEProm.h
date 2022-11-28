@@ -66,7 +66,7 @@ struct EValues {
 #define WHTHRESHOLD_6 200
 #define WHTHRESHOLD_7 200
 
-#define EEWL_START 102
+#define EEWL_START 110
 #define EEWL_BLOCKS 14
 
 struct EEWL {

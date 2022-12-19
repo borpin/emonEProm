@@ -66,8 +66,10 @@ struct EValues {
 #define WHTHRESHOLD_6 200
 #define WHTHRESHOLD_7 200
 
-#define EEWL_START 110
-#define EEWL_BLOCKS 14
+#define EEWL_START 132
+#define EEWL_BLOCKS 13
+// block size = 28 bytes + 1 (29 bytes)
+// 29 bytes x 13 = 377 bytes + 132 config section = 509 bytes (within 512 bytes eeprom size)
 
 struct EEWL {
 
